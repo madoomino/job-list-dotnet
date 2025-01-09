@@ -1,8 +1,35 @@
+using JobList.Data;
+using Microsoft.EntityFrameworkCore;
+
+DotNetEnv.Env.Load();
+
 var builder = WebApplication.CreateBuilder(args);
+
 {
+    builder.Services.AddControllers();
     builder.Services.AddEndpointsApiExplorer();
     builder.Services.AddSwaggerGen();
+
+    // Database connection
+    string dbConnectionString;
+    if (false)
+    {
+        dbConnectionString = DotNetEnv.Env.GetString("SQL_LITE_DB_PATH")
+                             ?? throw new InvalidOperationException(
+                                 "SQL_LITE_DB_PATH is not set.");
+        builder.Services.AddDbContext<ApplicationDbContext>(opts =>
+            opts.UseSqlite(dbConnectionString));
+    }
+    else
+    {
+        dbConnectionString = DotNetEnv.Env.GetString("SQL_SERVER_DB_CONNECTION")
+                             ?? throw new InvalidOperationException(
+                                 "SQL_SERVER_DB_CONNECTION is not set.");
+        builder.Services.AddDbContext<ApplicationDbContext>(opts =>
+            opts.UseSqlServer(dbConnectionString));
+    }
 }
+
 
 var app = builder.Build();
 {
@@ -12,6 +39,7 @@ var app = builder.Build();
         app.UseSwaggerUI();
     }
 
-    app.UseHttpsRedirection();
+    // app.UseHttpsRedirection();
+    app.MapControllers();
     app.Run();
 }

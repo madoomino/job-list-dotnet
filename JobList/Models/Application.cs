@@ -8,10 +8,8 @@ public class Application
     public DateTime AppliedAt { get; set; }
 
     // Applicant
-    public Guid ApplicantId { get; set; }
     public Applicant Applicant { get; set; }
 
     // JobPost
-    public Guid JobPostId { get; set; }
     public JobPost JobPost { get; set; }
 }
