@@ -1,5 +1,7 @@
 using JobList.Data;
 using Microsoft.EntityFrameworkCore;
+using JobList.Repository;
+using JobList.Interfaces;
 
 DotNetEnv.Env.Load();
 
@@ -12,7 +14,7 @@ var builder = WebApplication.CreateBuilder(args);
 
     // Database connection
     string dbConnectionString;
-    if (false)
+    if (builder.Environment.IsDevelopment())
     {
         dbConnectionString = DotNetEnv.Env.GetString("SQL_LITE_DB_PATH")
                              ?? throw new InvalidOperationException(
@@ -28,6 +30,9 @@ var builder = WebApplication.CreateBuilder(args);
         builder.Services.AddDbContext<ApplicationDbContext>(opts =>
             opts.UseSqlServer(dbConnectionString));
     }
+
+    // Registering the repository
+    builder.Services.AddScoped<IJopPostRepo, JopPostRepo>();
 }
 
 
