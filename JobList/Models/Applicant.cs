@@ -12,4 +12,6 @@ public class Applicant
     public string Resume { get; set; } = string.Empty;
     public DateTime CreatedAt { get; set; }
     public DateTime UpdatedAt { get; set; }
+
+    public ICollection<Application> Applications { get; set; } = new List<Application>();
 }

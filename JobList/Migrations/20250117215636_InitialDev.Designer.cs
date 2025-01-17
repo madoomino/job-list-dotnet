@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace JobList.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250109202010_Initial_Dev")]
-    partial class Initial_Dev
+    [Migration("20250117215636_InitialDev")]
+    partial class InitialDev
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -157,8 +157,8 @@ namespace JobList.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("JobTypeId")
-                        .HasColumnType("INTEGER");
+                    b.Property<Guid>("JobTypeId")
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("Location")
                         .IsRequired()
@@ -190,18 +190,20 @@ namespace JobList.Migrations
 
             modelBuilder.Entity("JobList.Models.JobType", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<int?>("ParentId")
-                        .HasColumnType("INTEGER");
+                    b.Property<Guid?>("ParentId")
+                        .HasColumnType("TEXT");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("ParentId");
 
                     b.ToTable("JobType");
                 });
@@ -209,13 +211,13 @@ namespace JobList.Migrations
             modelBuilder.Entity("JobList.Models.Application", b =>
                 {
                     b.HasOne("JobList.Models.Applicant", "Applicant")
-                        .WithMany()
+                        .WithMany("Applications")
                         .HasForeignKey("ApplicantId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("JobList.Models.JobPost", "JobPost")
-                        .WithMany()
+                        .WithMany("Applications")
                         .HasForeignKey("JobPostId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -228,13 +230,13 @@ namespace JobList.Migrations
             modelBuilder.Entity("JobList.Models.JobPost", b =>
                 {
                     b.HasOne("JobList.Models.Company", "Company")
-                        .WithMany()
+                        .WithMany("JobPosts")
                         .HasForeignKey("CompanyId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("JobList.Models.JobType", "JobType")
-                        .WithMany()
+                        .WithMany("JobPosts")
                         .HasForeignKey("JobTypeId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -242,6 +244,37 @@ namespace JobList.Migrations
                     b.Navigation("Company");
 
                     b.Navigation("JobType");
+                });
+
+            modelBuilder.Entity("JobList.Models.JobType", b =>
+                {
+                    b.HasOne("JobList.Models.JobType", "Parent")
+                        .WithMany("Children")
+                        .HasForeignKey("ParentId");
+
+                    b.Navigation("Parent");
+                });
+
+            modelBuilder.Entity("JobList.Models.Applicant", b =>
+                {
+                    b.Navigation("Applications");
+                });
+
+            modelBuilder.Entity("JobList.Models.Company", b =>
+                {
+                    b.Navigation("JobPosts");
+                });
+
+            modelBuilder.Entity("JobList.Models.JobPost", b =>
+                {
+                    b.Navigation("Applications");
+                });
+
+            modelBuilder.Entity("JobList.Models.JobType", b =>
+                {
+                    b.Navigation("Children");
+
+                    b.Navigation("JobPosts");
                 });
 #pragma warning restore 612, 618
         }

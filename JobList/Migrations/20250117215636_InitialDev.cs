@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace JobList.Migrations
 {
     /// <inheritdoc />
-    public partial class Initial_Dev : Migration
+    public partial class InitialDev : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -55,14 +55,18 @@ namespace JobList.Migrations
                 name: "JobType",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
+                    Id = table.Column<Guid>(type: "TEXT", nullable: false),
                     Name = table.Column<string>(type: "TEXT", nullable: false),
-                    ParentId = table.Column<int>(type: "INTEGER", nullable: true)
+                    ParentId = table.Column<Guid>(type: "TEXT", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_JobType", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_JobType_JobType_ParentId",
+                        column: x => x.ParentId,
+                        principalTable: "JobType",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -77,7 +81,7 @@ namespace JobList.Migrations
                     Location = table.Column<string>(type: "TEXT", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "TEXT", nullable: false),
                     UpdatedAt = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    JobTypeId = table.Column<int>(type: "INTEGER", nullable: false),
+                    JobTypeId = table.Column<Guid>(type: "TEXT", nullable: false),
                     CompanyId = table.Column<Guid>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
@@ -144,6 +148,11 @@ namespace JobList.Migrations
                 name: "IX_JobsPosts_JobTypeId",
                 table: "JobsPosts",
                 column: "JobTypeId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_JobType_ParentId",
+                table: "JobType",
+                column: "ParentId");
         }
 
         /// <inheritdoc />

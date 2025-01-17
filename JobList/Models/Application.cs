@@ -7,9 +7,11 @@ public class Application
     public string ApplicationStatus { get; set; }
     public DateTime AppliedAt { get; set; }
 
-    // Applicant
-    public Applicant Applicant { get; set; }
+    // Foreign keys
+    public Guid ApplicantId { get; set; }
+    public Guid JobPostId { get; set; }
 
-    // JobPost
+    // Navigation properties
+    public Applicant Applicant { get; set; }
     public JobPost JobPost { get; set; }
 }

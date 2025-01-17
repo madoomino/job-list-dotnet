@@ -12,4 +12,6 @@ public class Company
     public string IndustryField { get; set; } = string.Empty;
     public DateTime CreatedAt { get; set; }
     public DateTime UpdatedAt { get; set; }
+
+    public ICollection<JobPost> JobPosts { get; set; } = new List<JobPost>();
 }

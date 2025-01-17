@@ -12,8 +12,13 @@ public class JobPost
     public DateTime UpdatedAt { get; set; }
 
     // JobType
+    public Guid JobTypeId { get; set; }
     public JobType JobType { get; set; }
 
     // Company
+    public Guid CompanyId { get; set; }
     public Company Company { get; set; }
+
+    // Applications
+    public ICollection<Application> Applications { get; set; }
 }
